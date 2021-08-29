@@ -1,0 +1,22 @@
+{
+    "source": "JustNotification",
+    "applications": [
+        {
+            "app_key": "JustNotification",
+            "launch_type": "binary",
+            "binary_path_windows": "..\\JustNotification.exe",
+            "arguments": "--steamvr",
+            "is_dashboard_overlay": true,
+            "strings": {
+                "en_us": {
+                    "name": "JustNotification",
+                    "description": "Show Windows notifications in XSOverlay"
+                },
+                "ja_jp": {
+                    "name": "JustNotification",
+                    "description": "Windowsの通知をXSOverlayで確認できます"
+                }
+            }
+        }
+    ]
+}
