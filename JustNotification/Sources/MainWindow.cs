@@ -11,6 +11,8 @@ namespace JustNotification
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private static string[] args = Environment.GetCommandLineArgs();
         private static bool isSteamVR = Array.IndexOf(args, "--steamvr") != -1;
+        private static Properties.Settings properties = Properties.Settings.Default;
+        private static string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         private readonly int[] intervalList = { 500, 1000, 5000 };
         private readonly int[] timeoutList = { 1000, 3000, 5000, 7000, 9000 };
@@ -20,7 +22,7 @@ namespace JustNotification
             InitializeComponent();
 
             // SteamVRからの起動でトレイに格納を有効にしていた場合, 起動時にトレイに格納を有効にしていた場合以外であれば画面を表示する
-            if (!(isSteamVR && Properties.Settings.Default.vr_nogui) && !Properties.Settings.Default.startup_tray)
+            if (!(isSteamVR && properties.vr_nogui) && !properties.startup_tray)
             {
                 this.Show();
             }
@@ -33,21 +35,28 @@ namespace JustNotification
             logger.Info($"args: {String.Join(" ", args)}");
             logger.Info($"isSteamVR: {isSteamVR}");
 
-            label_version.Text = "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            if (properties.is_first_open)
+            {
+                MessageBox.Show("JustNotificationはXSOverlay上で動作しているため、事前にSteamからXSOverlayを購入・インストールしておく必要があります。\nこのソフト単体では動作しませんのでご注意ください。", "はじめに", MessageBoxButtons.OK);
+                properties.is_first_open = false;
+                properties.Save();
+            }
+
+            label_version.Text = "Version: " + version;
         }
 
         private void Init()
         {
             UpdateStatus();
             checkBox_autoLaunch.Checked = SteamVR.GetAutoLaunch();
-            checkBox_vr_nogui.Checked = Properties.Settings.Default.vr_nogui;
-            checkBox_window.Checked = Properties.Settings.Default.is_tray;
-            checkBox_notification_title.Checked = Properties.Settings.Default.enable_title;
-            textBox_interval.Text = Properties.Settings.Default.interval.ToString();
-            textBox_timeout.Text = Properties.Settings.Default.timeout.ToString();
+            checkBox_vr_nogui.Checked = properties.vr_nogui;
+            checkBox_window.Checked = properties.is_tray;
+            checkBox_notification_title.Checked = properties.enable_title;
+            textBox_interval.Text = properties.interval.ToString();
+            textBox_timeout.Text = properties.timeout.ToString();
             button_vr_unregister.Enabled = SteamVR.GetRegister();
-            comboBox_interval.SelectedIndex = Array.IndexOf(intervalList, Properties.Settings.Default.interval);
-            comboBox_timeout.SelectedIndex = Array.IndexOf(timeoutList, Properties.Settings.Default.timeout);
+            comboBox_interval.SelectedIndex = Array.IndexOf(intervalList, properties.interval);
+            comboBox_timeout.SelectedIndex = Array.IndexOf(timeoutList, properties.timeout);
         }
 
         private void UpdateStatus()
@@ -115,15 +124,15 @@ namespace JustNotification
 
         private void checkBox_vr_nogui_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.vr_nogui = checkBox_vr_nogui.Checked;
-            Properties.Settings.Default.Save();
+            properties.vr_nogui = checkBox_vr_nogui.Checked;
+            properties.Save();
         }
 
         private void textBox_interval_Leave(object sender, EventArgs e)
         {
             string validatedString = Utils.ValidationInt(textBox_interval.Text, "1000");
-            Properties.Settings.Default.interval = int.Parse(validatedString);
-            Properties.Settings.Default.Save();
+            properties.interval = int.Parse(validatedString);
+            properties.Save();
 
             Init();
         }
@@ -131,30 +140,30 @@ namespace JustNotification
         private void textBox_timeout_Leave(object sender, EventArgs e)
         {
             string validatedString = Utils.ValidationInt(textBox_timeout.Text, "1000");
-            Properties.Settings.Default.timeout = int.Parse(validatedString);
-            Properties.Settings.Default.Save();
+            properties.timeout = int.Parse(validatedString);
+            properties.Save();
 
             Init();
         }
 
         private void checkBox_notification_title_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.enable_title = checkBox_notification_title.Checked;
-            Properties.Settings.Default.Save();
+            properties.enable_title = checkBox_notification_title.Checked;
+            properties.Save();
         }
 
         private void checkBox_window_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.is_tray = checkBox_window.Checked;
-            Properties.Settings.Default.Save();
+            properties.is_tray = checkBox_window.Checked;
+            properties.Save();
         }
 
         private void comboBox_interval_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBox_interval.SelectedIndex == -1) return;
 
-            Properties.Settings.Default.interval = intervalList[comboBox_interval.SelectedIndex];
-            Properties.Settings.Default.Save();
+            properties.interval = intervalList[comboBox_interval.SelectedIndex];
+            properties.Save();
             Init();
         }
 
@@ -162,23 +171,30 @@ namespace JustNotification
         {
             if (comboBox_timeout.SelectedIndex == -1) return;
 
-            Properties.Settings.Default.timeout = timeoutList[comboBox_timeout.SelectedIndex];
-            Properties.Settings.Default.Save();
+            properties.timeout = timeoutList[comboBox_timeout.SelectedIndex];
+            properties.Save();
             Init();
         }
 
         private void checkBox_startup_tray_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.startup_tray = checkBox_startup_tray.Checked;
-            Properties.Settings.Default.Save();
+            properties.startup_tray = checkBox_startup_tray.Checked;
+            properties.Save();
         }
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(Properties.Settings.Default.is_tray)
+            if(properties.is_tray)
             {
                 e.Cancel = true;
                 this.Hide();
+
+                if (properties.is_first_tray)
+                {
+                    Utils.ShowNotification("タスクトレイに格納されました", "JustNotificationを終了するにはタスクトレイにあるアイコンを右クリックしてください");
+                    properties.is_first_tray = false;
+                    properties.Save();
+                }
             }
         }
 
@@ -199,7 +215,7 @@ namespace JustNotification
 
         private void button_test_toast_Click(object sender, EventArgs e)
         {
-            Utils.NotificationTest();
+            Utils.ShowNotification("テスト通知", "JustNotificationのテスト通知です");
         }
     }
 }

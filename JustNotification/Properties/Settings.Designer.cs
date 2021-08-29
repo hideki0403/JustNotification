@@ -94,5 +94,29 @@ namespace JustNotification.Properties {
                 this["timeout"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool is_first_open {
+            get {
+                return ((bool)(this["is_first_open"]));
+            }
+            set {
+                this["is_first_open"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool is_first_tray {
+            get {
+                return ((bool)(this["is_first_tray"]));
+            }
+            set {
+                this["is_first_tray"] = value;
+            }
+        }
     }
 }

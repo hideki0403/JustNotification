@@ -40,11 +40,11 @@ namespace JustNotification
             return validatedString;
         }
 
-        public static void NotificationTest()
+        public static void ShowNotification(string title, string text)
         {
             ToastContentBuilder toast = new();
-            toast.AddText("テスト通知");
-            toast.AddText("JustNotificationのテスト通知です");
+            toast.AddText(title);
+            toast.AddText(text);
             toast.Show();
         }
     }

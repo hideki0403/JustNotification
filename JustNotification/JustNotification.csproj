@@ -10,6 +10,7 @@
     <Company />
     <StartupObject>JustNotification.Program</StartupObject>
     <Platforms>AnyCPU;x64</Platforms>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
