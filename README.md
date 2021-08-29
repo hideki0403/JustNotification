@@ -1,0 +1,2 @@
+# JustNotification
+XSOverlayでWindowsの通知を確認出来るシンプルなアプリケーション
