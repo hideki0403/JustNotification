@@ -42,6 +42,8 @@ namespace JustNotification
             this.label_status_notifications = new System.Windows.Forms.Label();
             this.textBox_status_startup = new System.Windows.Forms.TextBox();
             this.groupBox_main_settings = new System.Windows.Forms.GroupBox();
+            this.comboBox_timeout = new System.Windows.Forms.ComboBox();
+            this.label_main_info_timeout = new System.Windows.Forms.Label();
             this.button_test_toast = new System.Windows.Forms.Button();
             this.comboBox_interval = new System.Windows.Forms.ComboBox();
             this.checkBox_autoLaunch = new System.Windows.Forms.CheckBox();
@@ -54,18 +56,21 @@ namespace JustNotification
             this.checkBox_vr_nogui = new System.Windows.Forms.CheckBox();
             this.label_version = new System.Windows.Forms.Label();
             this.groupBox_notification = new System.Windows.Forms.GroupBox();
+            this.label_timeout_ms = new System.Windows.Forms.Label();
+            this.label_timeout = new System.Windows.Forms.Label();
+            this.textBox_timeout = new System.Windows.Forms.TextBox();
             this.checkBox_notification_title = new System.Windows.Forms.CheckBox();
-            this.label_interval_info = new System.Windows.Forms.Label();
+            this.label_ms_info = new System.Windows.Forms.Label();
             this.label_interval_ms = new System.Windows.Forms.Label();
             this.label_interval = new System.Windows.Forms.Label();
             this.textBox_interval = new System.Windows.Forms.TextBox();
             this.groupBox_settings = new System.Windows.Forms.GroupBox();
+            this.checkBox_startup_tray = new System.Windows.Forms.CheckBox();
             this.checkBox_window = new System.Windows.Forms.CheckBox();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip_tray = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ToolStripMenuItem_ShowWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_exit = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkBox_startup_tray = new System.Windows.Forms.CheckBox();
             this.tab.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -190,6 +195,8 @@ namespace JustNotification
             // 
             // groupBox_main_settings
             // 
+            this.groupBox_main_settings.Controls.Add(this.comboBox_timeout);
+            this.groupBox_main_settings.Controls.Add(this.label_main_info_timeout);
             this.groupBox_main_settings.Controls.Add(this.button_test_toast);
             this.groupBox_main_settings.Controls.Add(this.comboBox_interval);
             this.groupBox_main_settings.Controls.Add(this.checkBox_autoLaunch);
@@ -202,11 +209,36 @@ namespace JustNotification
             this.groupBox_main_settings.TabStop = false;
             this.groupBox_main_settings.Text = "かんたん設定";
             // 
+            // comboBox_timeout
+            // 
+            this.comboBox_timeout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_timeout.FormattingEnabled = true;
+            this.comboBox_timeout.Items.AddRange(new object[] {
+            "とても短い (1秒)",
+            "短い (3秒)",
+            "普通 (5秒)",
+            "長い (7秒)",
+            "とても長い (9秒)"});
+            this.comboBox_timeout.Location = new System.Drawing.Point(129, 103);
+            this.comboBox_timeout.Name = "comboBox_timeout";
+            this.comboBox_timeout.Size = new System.Drawing.Size(121, 23);
+            this.comboBox_timeout.TabIndex = 6;
+            this.comboBox_timeout.SelectedIndexChanged += new System.EventHandler(this.comboBox_timeout_SelectedIndexChanged);
+            // 
+            // label_main_info_timeout
+            // 
+            this.label_main_info_timeout.AutoSize = true;
+            this.label_main_info_timeout.Location = new System.Drawing.Point(16, 106);
+            this.label_main_info_timeout.Name = "label_main_info_timeout";
+            this.label_main_info_timeout.Size = new System.Drawing.Size(103, 15);
+            this.label_main_info_timeout.TabIndex = 5;
+            this.label_main_info_timeout.Text = "通知を表示する長さ";
+            // 
             // button_test_toast
             // 
-            this.button_test_toast.Location = new System.Drawing.Point(16, 107);
+            this.button_test_toast.Location = new System.Drawing.Point(344, 64);
             this.button_test_toast.Name = "button_test_toast";
-            this.button_test_toast.Size = new System.Drawing.Size(135, 45);
+            this.button_test_toast.Size = new System.Drawing.Size(154, 62);
             this.button_test_toast.TabIndex = 4;
             this.button_test_toast.Text = "テスト通知を送信する";
             this.button_test_toast.UseVisualStyleBackColor = true;
@@ -217,12 +249,9 @@ namespace JustNotification
             this.comboBox_interval.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_interval.FormattingEnabled = true;
             this.comboBox_interval.Items.AddRange(new object[] {
-            "0.5秒ごと",
-            "1秒ごと",
-            "5秒ごと",
-            "10秒ごと",
-            "30秒ごと",
-            "1分ごと"});
+            "短い (0.5秒ごと)",
+            "普通 (1秒ごと)",
+            "長い (5秒ごと)"});
             this.comboBox_interval.Location = new System.Drawing.Point(129, 64);
             this.comboBox_interval.Name = "comboBox_interval";
             this.comboBox_interval.Size = new System.Drawing.Size(121, 23);
@@ -337,8 +366,11 @@ namespace JustNotification
             // 
             // groupBox_notification
             // 
+            this.groupBox_notification.Controls.Add(this.label_timeout_ms);
+            this.groupBox_notification.Controls.Add(this.label_timeout);
+            this.groupBox_notification.Controls.Add(this.textBox_timeout);
             this.groupBox_notification.Controls.Add(this.checkBox_notification_title);
-            this.groupBox_notification.Controls.Add(this.label_interval_info);
+            this.groupBox_notification.Controls.Add(this.label_ms_info);
             this.groupBox_notification.Controls.Add(this.label_interval_ms);
             this.groupBox_notification.Controls.Add(this.label_interval);
             this.groupBox_notification.Controls.Add(this.textBox_interval);
@@ -349,6 +381,34 @@ namespace JustNotification
             this.groupBox_notification.TabIndex = 4;
             this.groupBox_notification.TabStop = false;
             this.groupBox_notification.Text = "通知";
+            // 
+            // label_timeout_ms
+            // 
+            this.label_timeout_ms.AutoSize = true;
+            this.label_timeout_ms.Location = new System.Drawing.Point(235, 83);
+            this.label_timeout_ms.Name = "label_timeout_ms";
+            this.label_timeout_ms.Size = new System.Drawing.Size(34, 15);
+            this.label_timeout_ms.TabIndex = 7;
+            this.label_timeout_ms.Text = "ミリ秒";
+            this.label_timeout_ms.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label_timeout
+            // 
+            this.label_timeout.AutoSize = true;
+            this.label_timeout.Location = new System.Drawing.Point(13, 83);
+            this.label_timeout.Name = "label_timeout";
+            this.label_timeout.Size = new System.Drawing.Size(110, 15);
+            this.label_timeout.TabIndex = 6;
+            this.label_timeout.Text = "通知を表示する秒数:";
+            this.label_timeout.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // textBox_timeout
+            // 
+            this.textBox_timeout.Location = new System.Drawing.Point(129, 80);
+            this.textBox_timeout.Name = "textBox_timeout";
+            this.textBox_timeout.Size = new System.Drawing.Size(100, 23);
+            this.textBox_timeout.TabIndex = 5;
+            this.textBox_timeout.Leave += new System.EventHandler(this.textBox_timeout_Leave);
             // 
             // checkBox_notification_title
             // 
@@ -361,14 +421,14 @@ namespace JustNotification
             this.checkBox_notification_title.UseVisualStyleBackColor = true;
             this.checkBox_notification_title.CheckedChanged += new System.EventHandler(this.checkBox_notification_title_CheckedChanged);
             // 
-            // label_interval_info
+            // label_ms_info
             // 
-            this.label_interval_info.AutoSize = true;
-            this.label_interval_info.Location = new System.Drawing.Point(13, 79);
-            this.label_interval_info.Name = "label_interval_info";
-            this.label_interval_info.Size = new System.Drawing.Size(92, 15);
-            this.label_interval_info.TabIndex = 3;
-            this.label_interval_info.Text = "(1秒=1000ミリ秒)";
+            this.label_ms_info.AutoSize = true;
+            this.label_ms_info.Location = new System.Drawing.Point(13, 112);
+            this.label_ms_info.Name = "label_ms_info";
+            this.label_ms_info.Size = new System.Drawing.Size(92, 15);
+            this.label_ms_info.TabIndex = 3;
+            this.label_ms_info.Text = "(1秒=1000ミリ秒)";
             // 
             // label_interval_ms
             // 
@@ -410,6 +470,17 @@ namespace JustNotification
             this.groupBox_settings.TabStop = false;
             this.groupBox_settings.Text = "全般";
             // 
+            // checkBox_startup_tray
+            // 
+            this.checkBox_startup_tray.AutoSize = true;
+            this.checkBox_startup_tray.Location = new System.Drawing.Point(7, 48);
+            this.checkBox_startup_tray.Name = "checkBox_startup_tray";
+            this.checkBox_startup_tray.Size = new System.Drawing.Size(130, 19);
+            this.checkBox_startup_tray.TabIndex = 1;
+            this.checkBox_startup_tray.Text = "起動時にトレイに格納";
+            this.checkBox_startup_tray.UseVisualStyleBackColor = true;
+            this.checkBox_startup_tray.CheckedChanged += new System.EventHandler(this.checkBox_startup_tray_CheckedChanged);
+            // 
             // checkBox_window
             // 
             this.checkBox_window.AutoSize = true;
@@ -450,17 +521,6 @@ namespace JustNotification
             this.ToolStripMenuItem_exit.Size = new System.Drawing.Size(149, 22);
             this.ToolStripMenuItem_exit.Text = "ソフトを終了";
             this.ToolStripMenuItem_exit.Click += new System.EventHandler(this.ToolStripMenuItem_exit_Click);
-            // 
-            // checkBox_startup_tray
-            // 
-            this.checkBox_startup_tray.AutoSize = true;
-            this.checkBox_startup_tray.Location = new System.Drawing.Point(7, 48);
-            this.checkBox_startup_tray.Name = "checkBox_startup_tray";
-            this.checkBox_startup_tray.Size = new System.Drawing.Size(130, 19);
-            this.checkBox_startup_tray.TabIndex = 1;
-            this.checkBox_startup_tray.Text = "起動時にトレイに格納";
-            this.checkBox_startup_tray.UseVisualStyleBackColor = true;
-            this.checkBox_startup_tray.CheckedChanged += new System.EventHandler(this.checkBox_startup_tray_CheckedChanged);
             // 
             // MainWindow
             // 
@@ -504,7 +564,7 @@ namespace JustNotification
         private System.Windows.Forms.GroupBox groupBox_notification;
         private System.Windows.Forms.Label label_interval;
         private System.Windows.Forms.TextBox textBox_interval;
-        private System.Windows.Forms.Label label_interval_info;
+        private System.Windows.Forms.Label label_ms_info;
         private System.Windows.Forms.Label label_interval_ms;
         private System.Windows.Forms.Label label_vr_unregister;
         private System.Windows.Forms.Button button_vr_unregister;
@@ -531,6 +591,11 @@ namespace JustNotification
         private System.Windows.Forms.Label label_version;
         private System.Windows.Forms.Button button_test_toast;
         private System.Windows.Forms.CheckBox checkBox_startup_tray;
+        private System.Windows.Forms.Label label_timeout_ms;
+        private System.Windows.Forms.Label label_timeout;
+        private System.Windows.Forms.TextBox textBox_timeout;
+        private System.Windows.Forms.ComboBox comboBox_timeout;
+        private System.Windows.Forms.Label label_main_info_timeout;
     }
 }
 

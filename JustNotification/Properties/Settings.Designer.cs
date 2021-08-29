@@ -82,5 +82,17 @@ namespace JustNotification.Properties {
                 this["startup_tray"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5000")]
+        public int timeout {
+            get {
+                return ((int)(this["timeout"]));
+            }
+            set {
+                this["timeout"] = value;
+            }
+        }
     }
 }

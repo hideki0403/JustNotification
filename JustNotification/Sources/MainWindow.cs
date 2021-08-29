@@ -1,10 +1,6 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
-using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NLog;
 
@@ -12,10 +8,12 @@ namespace JustNotification
 {
     public partial class MainWindow : Form
     {
-        private readonly int[] intervalList = { 500, 1000, 5000, 10000, 30000, 60000};
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private static string[] args = Environment.GetCommandLineArgs();
         private static bool isSteamVR = Array.IndexOf(args, "--steamvr") != -1;
+
+        private readonly int[] intervalList = { 500, 1000, 5000 };
+        private readonly int[] timeoutList = { 1000, 3000, 5000, 7000, 9000 };
 
         public MainWindow()
         {
@@ -46,8 +44,10 @@ namespace JustNotification
             checkBox_window.Checked = Properties.Settings.Default.is_tray;
             checkBox_notification_title.Checked = Properties.Settings.Default.enable_title;
             textBox_interval.Text = Properties.Settings.Default.interval.ToString();
+            textBox_timeout.Text = Properties.Settings.Default.timeout.ToString();
             button_vr_unregister.Enabled = SteamVR.GetRegister();
             comboBox_interval.SelectedIndex = Array.IndexOf(intervalList, Properties.Settings.Default.interval);
+            comboBox_timeout.SelectedIndex = Array.IndexOf(timeoutList, Properties.Settings.Default.timeout);
         }
 
         private void UpdateStatus()
@@ -121,12 +121,17 @@ namespace JustNotification
 
         private void textBox_interval_Leave(object sender, EventArgs e)
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            string validationString = Strings.StrConv(Regex.Replace(textBox_interval.Text, @"\D", string.Empty), VbStrConv.Narrow);
-            string validatedString = validationString != string.Empty ? validationString : "1000";
-
+            string validatedString = Utils.ValidationInt(textBox_interval.Text, "1000");
             Properties.Settings.Default.interval = int.Parse(validatedString);
+            Properties.Settings.Default.Save();
+
+            Init();
+        }
+
+        private void textBox_timeout_Leave(object sender, EventArgs e)
+        {
+            string validatedString = Utils.ValidationInt(textBox_timeout.Text, "1000");
+            Properties.Settings.Default.timeout = int.Parse(validatedString);
             Properties.Settings.Default.Save();
 
             Init();
@@ -149,6 +154,15 @@ namespace JustNotification
             if (comboBox_interval.SelectedIndex == -1) return;
 
             Properties.Settings.Default.interval = intervalList[comboBox_interval.SelectedIndex];
+            Properties.Settings.Default.Save();
+            Init();
+        }
+
+        private void comboBox_timeout_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox_timeout.SelectedIndex == -1) return;
+
+            Properties.Settings.Default.timeout = timeoutList[comboBox_timeout.SelectedIndex];
             Properties.Settings.Default.Save();
             Init();
         }
@@ -185,10 +199,7 @@ namespace JustNotification
 
         private void button_test_toast_Click(object sender, EventArgs e)
         {
-            ToastContentBuilder toast = new();
-            toast.AddText("テスト通知");
-            toast.AddText("JustNotificationのテスト通知です");
-            toast.Show();
+            Utils.NotificationTest();
         }
     }
 }
