@@ -18,13 +18,13 @@ namespace JustNotification
         private static UserNotificationListener userNotificationListener = null;
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static async Task<bool> Init()
+        public static async void Init()
         {
             if (!ApiInformation.IsTypePresent("Windows.UI.Notifications.Management.UserNotificationListener"))
             {
                 AccessAllowed = false;
                 userNotificationListener = null;
-                return false;
+                return;
             }
 
             userNotificationListener = UserNotificationListener.Current;
@@ -34,16 +34,16 @@ namespace JustNotification
             {
                 AccessAllowed = false;
                 userNotificationListener = null;
-                return false;
+                return;
             }
             AccessAllowed = true;
 
             GetNotification();
 
-            return true;
+            return;
         }
 
-        public static async void GetNotification()
+        private static async void GetNotification()
         {
             List<uint> notificationIds = new();
             bool init = false;
@@ -52,7 +52,7 @@ namespace JustNotification
             {
                 IReadOnlyList<UserNotification> userNotifications = await userNotificationListener.GetNotificationsAsync(NotificationKinds.Toast);
 
-                // 初回取得時には既にあった通知は投げないようにする
+                // 初回取得時点で既にある通知は投げないようにする
                 if(!init)
                 {
                     foreach (var n in userNotifications) notificationIds.Add(n.Id);
@@ -68,7 +68,7 @@ namespace JustNotification
                     }
                 }
 
-                Thread.Sleep(Properties.Settings.Default.interval);
+                await Task.Delay(Properties.Settings.Default.interval);
             }
         }
 

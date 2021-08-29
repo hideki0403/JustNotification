@@ -11,7 +11,9 @@ namespace JustNotification
         [STAThread]
         static void Main()
         {
+            // Initialize
             Init();
+
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -19,10 +21,9 @@ namespace JustNotification
             Application.Run();
         }
 
-        
-        private static void Init()
+        static void Init()
         {
-            _ = Notification.Init();
+            Notification.Init();
             SteamVR.Init();
         }
     }
