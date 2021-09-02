@@ -13,6 +13,7 @@ namespace JustNotification
         private static bool isSteamVR = Array.IndexOf(args, "--steamvr") != -1;
         private static Properties.Settings properties = Properties.Settings.Default;
         private static string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        private static bool isInitializing = false;
 
         private readonly int[] intervalList = { 500, 1000, 5000 };
         private readonly int[] timeoutList = { 1000, 3000, 5000, 7000, 9000 };
@@ -35,18 +36,19 @@ namespace JustNotification
             logger.Info($"args: {String.Join(" ", args)}");
             logger.Info($"isSteamVR: {isSteamVR}");
 
-            if (properties.is_first_open)
-            {
-                MessageBox.Show("JustNotificationはXSOverlay上で動作しているため、事前にSteamからXSOverlayを購入・インストールしておく必要があります。\nこのソフト単体では動作しませんのでご注意ください。", "はじめに", MessageBoxButtons.OK);
-                properties.is_first_open = false;
-                properties.Save();
-            }
+            //if (properties.is_first_open)
+            //{
+            //    MessageBox.Show("JustNotificationはXSOverlay上で動作しているため、事前にSteamからXSOverlayを購入・インストールしておく必要があります。\nこのソフト単体では動作しませんのでご注意ください。", "はじめに", MessageBoxButtons.OK);
+            //    properties.is_first_open = false;
+            //    properties.Save();
+            //}
 
-            label_version.Text = "Version: " + version;
+            this.Text = "JustNotification v" + version;
         }
 
         private void Init()
         {
+            isInitializing = true;
             UpdateStatus();
             checkBox_autoLaunch.Checked = SteamVR.GetAutoLaunch();
             checkBox_vr_nogui.Checked = properties.vr_nogui;
@@ -57,6 +59,9 @@ namespace JustNotification
             button_vr_unregister.Enabled = SteamVR.GetRegister();
             comboBox_interval.SelectedIndex = Array.IndexOf(intervalList, properties.interval);
             comboBox_timeout.SelectedIndex = Array.IndexOf(timeoutList, properties.timeout);
+            radioButton_xs.Checked = properties.use_xsoverlay;
+            radioButton_jn.Checked = !properties.use_xsoverlay;
+            isInitializing = false;
         }
 
         private void UpdateStatus()
@@ -106,6 +111,10 @@ namespace JustNotification
 
         private void button_vr_unregister_Click(object sender, EventArgs e)
         {
+            DialogResult res = MessageBox.Show("SteamVRの「スタートアップオーバーレイ」一覧からJustNotificationを削除します。\n削除すると自動起動が無効になりますが、本当に削除しますか？", "JustNotification", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk);
+
+            if (res == DialogResult.No) return;
+
             bool isSucceedSteamVR = SteamVR.SetRegister(false);
 
             logger.Trace($"isUnregisteredSteamVR: {isSucceedSteamVR}");
@@ -139,7 +148,7 @@ namespace JustNotification
 
         private void textBox_timeout_Leave(object sender, EventArgs e)
         {
-            string validatedString = Utils.ValidationInt(textBox_timeout.Text, "1000");
+            string validatedString = Utils.ValidationInt(textBox_timeout.Text, "5000");
             properties.timeout = int.Parse(validatedString);
             properties.Save();
 
@@ -184,7 +193,7 @@ namespace JustNotification
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(properties.is_tray)
+            if(properties.is_tray && e.CloseReason == CloseReason.UserClosing)
             {
                 e.Cancel = true;
                 this.Hide();
@@ -194,6 +203,22 @@ namespace JustNotification
                     Utils.ShowNotification("タスクトレイに格納されました", "JustNotificationを終了するにはタスクトレイにあるアイコンを右クリックしてください");
                     properties.is_first_tray = false;
                     properties.Save();
+                }
+            }
+        }
+
+        private void radioButton_xs_CheckedChanged(object sender, EventArgs e)
+        {
+            properties.use_xsoverlay = radioButton_xs.Checked;
+            properties.Save();
+
+            if (!isInitializing)
+            {
+                DialogResult res = MessageBox.Show("この設定を反映させるためには、JustNotificationを再起動する必要があります。\n今すぐ再起動しますか？", "JustNotification", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk);
+                
+                if (res == DialogResult.Yes)
+                {
+                    Application.Restart();
                 }
             }
         }
@@ -210,7 +235,7 @@ namespace JustNotification
 
         private void ToolStripMenuItem_exit_Click(object sender, EventArgs e)
         {
-            Environment.Exit(0);
+            Application.Exit();
         }
 
         private void button_test_toast_Click(object sender, EventArgs e)

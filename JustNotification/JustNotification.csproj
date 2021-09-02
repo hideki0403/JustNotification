@@ -10,11 +10,10 @@
     <Company />
     <StartupObject>JustNotification.Program</StartupObject>
     <Platforms>AnyCPU;x64</Platforms>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="C:\Users\yukineko\.nuget\packages\nlog.config\4.7.11\contentFiles\any\any\NLog.config" />
     <None Remove="NLog.config" />
     <None Remove="Resources\JustNotification.vrmanifest" />
   </ItemGroup>

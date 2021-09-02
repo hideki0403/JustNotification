@@ -85,7 +85,16 @@ namespace JustNotification
                 string appIcon = await Utils.GetLogoAsync(n);
 
                 logger.Trace($"NotificationDetected: {nameText}");
-                XSNotifications.Show(titleText, bodyText, nameText, appIcon);
+
+                if(Properties.Settings.Default.use_xsoverlay)
+                {
+                    XSNotifications.Show(titleText, bodyText, nameText, appIcon);
+                }
+                else
+                {
+                    JNNotifications.Show(titleText, bodyText, nameText);
+                }
+                
             }
         }
     }

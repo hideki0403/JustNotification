@@ -118,5 +118,17 @@ namespace JustNotification.Properties {
                 this["is_first_tray"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool use_xsoverlay {
+            get {
+                return ((bool)(this["use_xsoverlay"]));
+            }
+            set {
+                this["use_xsoverlay"] = value;
+            }
+        }
     }
 }
