@@ -12,24 +12,6 @@ namespace JustNotification
 {
     class Utils
     {
-        public static async Task<string> GetLogoAsync(UserNotification app)
-        {
-            RandomAccessStreamReference stream = app.AppInfo.DisplayInfo.GetLogo(new Size(64, 64));
-
-            // 通知のアイコンを取れるのはUWPのみで、それ以外はstreamがnullになるためnullチェックをする必要がある
-            if (stream == null) return "";
-
-            IRandomAccessStreamWithContentType content = await stream.OpenReadAsync();
-
-            byte[] image = new byte[content.Size];
-            DataReader reader = new(content);
-
-            await reader.LoadAsync((uint)content.Size);
-            reader.ReadBytes(image);
-
-            return Convert.ToBase64String(image);
-        }
-
         public static string ValidationInt(string rawString, string defaultInt)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

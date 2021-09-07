@@ -11,7 +11,7 @@ namespace JustNotification
         [STAThread]
         static void Main()
         {
-            string appName = "JustNotification";
+            string appName = "JustNotification+";
             System.Threading.Mutex mutex = new System.Threading.Mutex(false, appName);
 
             bool hasHandle = false;
@@ -32,7 +32,7 @@ namespace JustNotification
                     // SteamVRからの起動であればメッセージは表示しない
                     if(Array.IndexOf(Environment.GetCommandLineArgs(), "--steamvr") == -1)
                     {
-                        MessageBox.Show("既に起動されているため、JustNotificationを起動できませんでした。", "起動エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("既に起動されているため、JustNotification+を起動できませんでした。", "起動エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
                     return;

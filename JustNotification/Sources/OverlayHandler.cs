@@ -16,8 +16,6 @@ namespace JustNotification
     {
         public static void Init()
         {
-            if (Properties.Settings.Default.use_xsoverlay) return;
-
             string AppPath = Path.GetFullPath("./overlay/JustNotificationOverlay.exe");
 
             // ファイルチェック
@@ -27,7 +25,7 @@ namespace JustNotification
                 return;
             }
 
-            Process.Start(AppPath, "-quit -batchmode");
+            Process.Start(AppPath);
         }
     }
 }

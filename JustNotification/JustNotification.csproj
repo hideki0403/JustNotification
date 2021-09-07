@@ -10,7 +10,11 @@
     <Company />
     <StartupObject>JustNotification.Program</StartupObject>
     <Platforms>AnyCPU;x64</Platforms>
-    <Version>1.2.0</Version>
+    <Version>1.0.0</Version>
+    <PackageId>JustNotification+</PackageId>
+    <Description>VR上でWindowsの通知を受け取れるソフトです</Description>
+    <Product>JustNotification+</Product>
+    <AssemblyName>JustNotificationPlus</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

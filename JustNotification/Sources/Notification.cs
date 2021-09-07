@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Windows.UI.Notifications;
@@ -72,7 +71,7 @@ namespace JustNotification
             }
         }
 
-        private static async void ShowNotification(UserNotification n)
+        private static void ShowNotification(UserNotification n)
         {
             var notificationBinding = n.Notification.Visual.GetBinding(KnownNotificationBindings.ToastGeneric);
             if (notificationBinding != null)
@@ -82,19 +81,11 @@ namespace JustNotification
                 string nameText = n.AppInfo.DisplayInfo.DisplayName;
                 string titleText = textElements.FirstOrDefault()?.Text;
                 string bodyText = string.Join("\n", textElements.Skip(1).Select(t => t.Text));
-                string appIcon = await Utils.GetLogoAsync(n);
 
                 logger.Trace($"NotificationDetected: {nameText}");
 
-                if(Properties.Settings.Default.use_xsoverlay)
-                {
-                    XSNotifications.Show(titleText, bodyText, nameText, appIcon);
-                }
-                else
-                {
-                    JNNotifications.Show(titleText, bodyText, nameText);
-                }
-                
+                NotificationHandler.Show(titleText, bodyText, nameText);
+
             }
         }
     }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace JustNotification
 {
-    class JNNotifications
+    class NotificationHandler
     {
         private struct JNMessage
         {
@@ -18,14 +18,10 @@ namespace JustNotification
             public string content { get; set; }
         }
 
-        private const int Port = 42030;
+        private static IPC socket = new();
 
         public static void Show(string titleText, string bodyText, string nameText)
         {
-            IPAddress broadcastIP = IPAddress.Parse("127.0.0.1");
-            Socket broadcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            IPEndPoint endPoint = new IPEndPoint(broadcastIP, Port);
-
             JNMessage notification = new JNMessage();
 
             notification.title = titleText ?? "";
@@ -38,8 +34,8 @@ namespace JustNotification
                 notification.title += $" - {nameText ?? ""}";
             }
 
-            byte[] byteBuffer = JsonSerializer.SerializeToUtf8Bytes(notification);
-            broadcastSocket.SendTo(byteBuffer, endPoint);
+            string json = JsonSerializer.Serialize(notification);
+            _ = socket.Send(json);
         }
     }
 }
