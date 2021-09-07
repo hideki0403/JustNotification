@@ -98,36 +98,12 @@ namespace JustNotification.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool is_first_open {
-            get {
-                return ((bool)(this["is_first_open"]));
-            }
-            set {
-                this["is_first_open"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool is_first_tray {
             get {
                 return ((bool)(this["is_first_tray"]));
             }
             set {
                 this["is_first_tray"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool use_xsoverlay {
-            get {
-                return ((bool)(this["use_xsoverlay"]));
-            }
-            set {
-                this["use_xsoverlay"] = value;
             }
         }
     }
