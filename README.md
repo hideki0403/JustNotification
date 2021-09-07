@@ -1,2 +1,2 @@
 # JustNotification
-XSOverlayでWindowsの通知を確認出来るシンプルなアプリケーション
+VR上でWindowsの通知を確認出来るシンプルなアプリケーション
